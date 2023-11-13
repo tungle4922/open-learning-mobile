@@ -9,6 +9,9 @@ const upcomingMoviesEndpoint = `${apiBaseUrl}/movie/upcoming?api_key=${apiKey}`;
 const topRatedMoviesEndpoint = `${apiBaseUrl}/movie/top_rated?api_key=${apiKey}`;
 const searchMoviesEndpoint = `${apiBaseUrl}/search/movie?api_key=${apiKey}`;
 
+const courseBaseApiUrl = 'https://coursewebbackend.vercel.app'
+const allCourseEndpoint = `${courseBaseApiUrl}/course`;
+
 
 // endpoints with dynamic params
 
@@ -56,6 +59,11 @@ export const fetchUpcomingMovies = ()=>{
 }
 export const fetchTopRatedMovies = ()=>{
     return apiCall(topRatedMoviesEndpoint);
+}
+
+//
+export const fetchAllCourses = ()=>{
+    return apiCall(allCourseEndpoint);
 }
 
 

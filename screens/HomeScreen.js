@@ -1,92 +1,86 @@
-import { View, Text, TouchableOpacity, ScrollView, Platform } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import {Bars3CenterLeftIcon, MagnifyingGlassIcon} from 'react-native-heroicons/outline'
-import TrendingMovies from '../components/trendingMovies';
-import MovieList from '../components/movieList';
-import { StatusBar } from 'expo-status-bar';
-import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from '../api/moviedb';
-import { useNavigation } from '@react-navigation/native';
-import Loading from '../components/loading';
-import { styles } from '../theme';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+  Image,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Bars3CenterLeftIcon,
+  MagnifyingGlassIcon,
+} from "react-native-heroicons/outline";
+import { StatusBar } from "expo-status-bar";
+import { fetchAllCourses, fetchTopRatedMovies } from "../api/moviedb";
+import { useNavigation } from "@react-navigation/native";
+import Loading from "../components/loading";
+import { styles } from "../theme";
+import MainCourse from "../components/mainCourse";
+import UpcomingCourse from "../components/upcomingCourse";
+import CourseList from "../components/courseList";
 
-const ios = Platform.OS === 'ios';
+const ios = Platform.OS === "ios";
 
 export default function HomeScreen() {
-
-  const [trending, setTrending] = useState([]);
-  const [upcoming, setUpcoming] = useState([]);
-  const [topRated, setTopRated] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [allCourse, setAllCourse] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+  useEffect(() => {
+    getALLCourse();
+  }, []);
 
-  useEffect(()=>{
-    getTrendingMovies();
-    getUpcomingMovies();
-    getTopRatedMovies();
-  },[]);
-
-  const getTrendingMovies = async ()=>{
-    const data = await fetchTrendingMovies();
-    console.log('got trending', data.results.length)
-    if(data && data.results) setTrending(data.results);
-    setLoading(false)
-  }
-  const getUpcomingMovies = async ()=>{
-    const data = await fetchUpcomingMovies();
-    console.log('got upcoming', data.results.length)
-    if(data && data.results) setUpcoming(data.results);
-  }
-  const getTopRatedMovies = async ()=>{
-    const data = await fetchTopRatedMovies();
-    console.log('got top rated', data.results.length)
-    if(data && data.results) setTopRated(data.results);
-  }
-
-
+  const getALLCourse = async () => {
+    const data = await fetchAllCourses();
+    console.log("got all course", data.length);
+    if (data) setAllCourse(data);
+    setLoading(false);
+  };
 
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar */}
-      <SafeAreaView className={ios? "-mb-2": "mb-3"}>
+      <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
           <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
-          <Text 
-            className="text-white text-3xl font-bold">
-              <Text style={styles.text}>M</Text>ovies
-          </Text>
-          <TouchableOpacity onPress={()=> navigation.navigate('Search')}>
+          <View className="flex-row items-center">
+            <Image
+              className="rounded-3xl w-[25px] h-[25px] mr-2"
+              source={{
+                uri: "https://seeklogo.com/images/O/opensea-logo-7DE9D85D62-seeklogo.com.png",
+              }}
+            />
+            <Text className="text-white text-xl font-bold">
+              <Text className="text-[#4177be]">Open</Text>Learning
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-      {
-        loading? (
-          <Loading />
-        ):(
-          <ScrollView 
-            showsVerticalScrollIndicator={false} 
-            contentContainerStyle={{paddingBottom: 10}}
-          >
+      {loading ? (
+        <Loading />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 10 }}
+        >
+          {/* All course Carousel */}
+          {allCourse.length > 0 && <MainCourse data={allCourse.filter((item) => item.price > 0)} />}
 
-            {/* Trending Movies Carousel */}
-            { trending.length>0 && <TrendingMovies data={trending} /> }
+          {/* All upcoming course */}
+          <UpcomingCourse />
 
-            {/* upcoming movies row */}
-            { upcoming.length>0 && <MovieList title="Upcoming" data={upcoming} /> }
-            
-            {/* top rated movies row */}
-            { topRated.length>0 && <MovieList title="Top Rated" data={topRated} /> }
-
-          </ScrollView>
-        )
-      }
-      
-  </View>
-      
-
-   
-  )
+          {/* top rated movies row */}
+          {allCourse.length > 0 && (
+            <CourseList title="Khóa học miễn phí" data={allCourse.filter((item) => item.price === 0)} />
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
 }
