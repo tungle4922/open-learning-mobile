@@ -16,7 +16,7 @@ export default function MainCourse({ data }) {
   const navigation = useNavigation();
 
   const handleClick = (item) => {
-    navigation.navigate("Movie", item);
+    navigation.navigate("Course", item);
   };
 
   return (

@@ -17,6 +17,8 @@ import Cast from "../components/cast";
 import MovieList from "../components/movieList";
 import {
   fallbackMoviePoster,
+  fallbackPersonImage,
+  fetchCourseDetails,
   fetchMovieCredits,
   fetchMovieDetails,
   fetchSimilarMovies,
@@ -24,15 +26,17 @@ import {
 } from "../api/moviedb";
 import { styles, theme } from "../theme";
 import Loading from "../components/loading";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : " mt-3";
 var { width, height } = Dimensions.get("window");
 
-export default function MovieScreen() {
+export default function CourseScreen() {
   const { params: item } = useRoute();
   const navigation = useNavigation();
   const [movie, setMovie] = useState({});
+  const [course, setCourse] = useState({});
   const [cast, setCast] = useState([]);
   const [similarMovies, setSimilarMovies] = useState([]);
   const [isFavourite, toggleFavourite] = useState(false);
@@ -40,10 +44,20 @@ export default function MovieScreen() {
 
   useEffect(() => {
     setLoading(true);
+    getCourseDetail(item._id);
     getMovieDetials(item.id);
     getMovieCredits(item.id);
     getSimilarMovies(item.id);
   }, [item]);
+
+  const getCourseDetail = async (id) => {
+    const data = await fetchCourseDetails(id);
+    console.log("got course details success");
+    setLoading(false);
+    if (data) {
+      setCourse({ ...course, ...data });
+    }
+  };
 
   const getMovieDetials = async (id) => {
     const data = await fetchMovieDetails(id);
@@ -53,6 +67,7 @@ export default function MovieScreen() {
       setMovie({ ...movie, ...data });
     }
   };
+
   const getMovieCredits = async (id) => {
     const data = await fetchMovieCredits(id);
     console.log("got movie credits");
@@ -60,6 +75,7 @@ export default function MovieScreen() {
       setCast(data.cast);
     }
   };
+
   const getSimilarMovies = async (id) => {
     const data = await fetchSimilarMovies(id);
     console.log("got similar movies");
@@ -100,11 +116,10 @@ export default function MovieScreen() {
         ) : (
           <View>
             <Image
-              // source={require('../assets/images/moviePoster2.png')}
               source={{
-                uri: image500(movie.poster_path) || fallbackMoviePoster,
+                uri: item.imageUrl,
               }}
-              style={{ width, height: height * 0.55 }}
+              style={{ width, height: height * 0.4 }}
             />
             <LinearGradient
               colors={[
@@ -126,42 +141,57 @@ export default function MovieScreen() {
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
         {/* title */}
         <Text className="text-white text-center text-3xl font-bold tracking-widest">
-          {movie?.title}
+          {course?.name}
         </Text>
 
         {/* status, release year, runtime */}
-        {movie?.id ? (
+        {course?._id ? (
           <Text className="text-neutral-400 font-semibold text-base text-center">
-            {movie?.status} • {movie?.release_date?.split("-")[0] || "N/A"} •{" "}
-            {movie?.runtime} min
+            {course?.type2} • {course?.type} • {course?.duration}
           </Text>
         ) : null}
 
-        {/* genres  */}
-        <View className="flex-row justify-center mx-4 space-x-2">
-          {movie?.genres?.map((genre, index) => {
-            let showDot = index + 1 != movie.genres.length;
-            return (
-              <Text
-                key={index}
-                className="text-neutral-400 font-semibold text-base text-center"
-              >
-                {genre?.name} {showDot ? "•" : null}
-              </Text>
-            );
-          })}
-        </View>
-
         {/* description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
-          {movie?.overview}
+          {course?.description}
         </Text>
       </View>
 
-      {/* cast */}
-      {movie?.id && cast.length > 0 && (
-        <Cast navigation={navigation} cast={cast} />
-      )}
+      {/* author */}
+      <View className="my-6">
+        <Text className="text-white text-lg mx-4 mb-5">Tác giả</Text>
+        <TouchableOpacity className="mr-4 items-center">
+          <View className="overflow-hidden rounded-full h-20 w-20 items-center border border-neutral-500">
+            <Image
+              className="rounded-2xl h-24 w-20"
+              source={{
+                uri: course?.autherImg || fallbackPersonImage,
+              }}
+            />
+          </View>
+
+          <Text className="text-white text-xs mt-1">
+            {course?.autherName?.length > 20
+              ? course?.autherName.slice(0, 20) + "..."
+              : course?.autherName}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View>
+        {course?.youtube?.map((item, index) => {
+          return (
+            <View key={index}>
+              {/* <YoutubePlayer
+                height={300}
+                play={false}
+                videoId={item.ytUrl?.split("/").pop()}
+              /> */}
+              {/* <Text className="text-white mt-[-85px] mb-12">{item.ytName}</Text> */}
+            </View>
+          );
+        })}
+      </View>
 
       {/* similar movies section */}
       {movie?.id && similarMovies.length > 0 && (

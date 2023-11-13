@@ -43,7 +43,7 @@ import {
             return (
               <TouchableWithoutFeedback
                 key={index}
-                onPress={() => navigation.push("Movie", item)}
+                onPress={() => navigation.push("Course", item)}
               >
                 <View className="space-y-1 mr-4">
                   <Image
