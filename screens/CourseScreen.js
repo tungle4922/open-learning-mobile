@@ -6,27 +6,26 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
+  Button,
+  Alert,
+  RefreshControl,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { ArrowLeftIcon, ChevronLeftIcon } from "react-native-heroicons/outline";
+import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { HeartIcon } from "react-native-heroicons/solid";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Cast from "../components/cast";
-import MovieList from "../components/movieList";
 import {
-  fallbackMoviePoster,
+  _retrieveData,
   fallbackPersonImage,
   fetchCourseDetails,
-  fetchMovieCredits,
-  fetchMovieDetails,
-  fetchSimilarMovies,
-  image500,
-} from "../api/moviedb";
+} from "../api/apis";
 import { styles, theme } from "../theme";
 import Loading from "../components/loading";
-import YoutubePlayer from "react-native-youtube-iframe";
+import YoutubePlayer, { getYoutubeMeta } from "react-native-youtube-iframe";
+import VideoList from "../components/videoList";
+import axios from "axios";
 
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : " mt-3";
@@ -35,20 +34,26 @@ var { width, height } = Dimensions.get("window");
 export default function CourseScreen() {
   const { params: item } = useRoute();
   const navigation = useNavigation();
-  const [movie, setMovie] = useState({});
   const [course, setCourse] = useState({});
-  const [cast, setCast] = useState([]);
-  const [similarMovies, setSimilarMovies] = useState([]);
+  const [thumbnailUrl, setThumbnailUrl] = useState([]);
   const [isFavourite, toggleFavourite] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(undefined);
+  const [isBought, setIsBought] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    getUserInfo();
     getCourseDetail(item._id);
-    getMovieDetials(item.id);
-    getMovieCredits(item.id);
-    getSimilarMovies(item.id);
   }, [item]);
+
+  const getUserInfo = async () => {
+    const res = await _retrieveData("user");
+    if (res) {
+      setUserInfo(JSON.parse(res));
+    }
+  };
 
   const getCourseDetail = async (id) => {
     const data = await fetchCourseDetails(id);
@@ -56,35 +61,70 @@ export default function CourseScreen() {
     setLoading(false);
     if (data) {
       setCourse({ ...course, ...data });
+      let listImg = [];
+      for (const item of data?.youtube || []) {
+        const meta = await getYoutubeMeta(item.ytUrl?.split("/").pop());
+        listImg.push(meta.thumbnail_url);
+      }
+      setThumbnailUrl(listImg);
+
+      const userJSON = await _retrieveData("user");
+      const user = JSON.parse(userJSON);
+      const res = data?.purchasedUser?.find((item) => item === user?._id);
+      if (res) {
+        setIsBought(true);
+      } else {
+        setIsBought(false);
+      }
     }
   };
 
-  const getMovieDetials = async (id) => {
-    const data = await fetchMovieDetails(id);
-    console.log("got movie details");
-    setLoading(false);
-    if (data) {
-      setMovie({ ...movie, ...data });
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getCourseDetail(item._id);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  const addToCart = async () => {
+    if (userInfo) {
+      const newItems = {
+        name: course?.name,
+        price: course?.price,
+        type: course?.type,
+        imageUrl: course?.imageUrl,
+        user: userInfo?._id,
+      };
+      try {
+        const res = await axios.post(
+          "https://coursewebbackend.vercel.app/cart",
+          newItems
+        );
+        Alert.alert("Order Success", "Thêm vào giỏ hàng thành công", [
+          {
+            text: "Cancel",
+            cancelable: true,
+            style: "cancel",
+          },
+        ]);
+      } catch (err) {
+        Alert.alert("Order Failed", "Thêm vào giỏ hàng thất bại", [
+          {
+            text: "Cancel",
+            cancelable: true,
+            style: "cancel",
+          },
+        ]);
+      }
     }
   };
 
-  const getMovieCredits = async (id) => {
-    const data = await fetchMovieCredits(id);
-    console.log("got movie credits");
-    if (data && data.cast) {
-      setCast(data.cast);
-    }
-  };
-
-  const getSimilarMovies = async (id) => {
-    const data = await fetchSimilarMovies(id);
-    console.log("got similar movies");
-    if (data && data.results) {
-      setSimilarMovies(data.results);
-    }
-  };
   return (
     <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
       contentContainerStyle={{ paddingBottom: 20 }}
       className="flex-1 bg-neutral-900"
     >
@@ -137,7 +177,6 @@ export default function CourseScreen() {
       </View>
 
       {/* movie details */}
-
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
         {/* title */}
         <Text className="text-white text-center text-3xl font-bold tracking-widest">
@@ -146,9 +185,14 @@ export default function CourseScreen() {
 
         {/* status, release year, runtime */}
         {course?._id ? (
-          <Text className="text-neutral-400 font-semibold text-base text-center">
-            {course?.type2} • {course?.type} • {course?.duration}
-          </Text>
+          <>
+            <Text className="text-neutral-400 font-semibold text-base text-center">
+              {course?.type2} • {course?.type} • {course?.duration}
+            </Text>
+            <Text className="text-[#eab308] font-semibold text-lg text-center">
+              ₫{course?.price.toLocaleString()}
+            </Text>
+          </>
         ) : null}
 
         {/* description */}
@@ -178,28 +222,22 @@ export default function CourseScreen() {
         </TouchableOpacity>
       </View>
 
-      <View>
-        {course?.youtube?.map((item, index) => {
-          return (
-            <View key={index}>
-              {/* <YoutubePlayer
-                height={300}
-                play={false}
-                videoId={item.ytUrl?.split("/").pop()}
-              /> */}
-              {/* <Text className="text-white mt-[-85px] mb-12">{item.ytName}</Text> */}
-            </View>
-          );
-        })}
-      </View>
-
-      {/* similar movies section */}
-      {movie?.id && similarMovies.length > 0 && (
-        <MovieList
-          title={"Similar Movies"}
+      {userInfo?.accessToken && (isBought === true || course?.price === 0) && (
+        <VideoList
+          title={"Danh sách bài học"}
           hideSeeAll={true}
-          data={similarMovies}
+          data={course?.youtube}
+          thumbnailUrl={thumbnailUrl}
         />
+      )}
+
+      {userInfo?.accessToken && isBought === false && course?.price !== 0 && (
+        <View className="px-3 mt-4 flex justify-center">
+          <Button
+            onPress={() => addToCart()}
+            title="Thêm vào giỏ hàng"
+          ></Button>
+        </View>
       )}
     </ScrollView>
   );

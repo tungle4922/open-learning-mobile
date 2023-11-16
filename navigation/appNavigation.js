@@ -2,10 +2,11 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
-import MovieScreen from '../screens/MovieScreen';
-import PersonScreen from '../screens/PersonScreen';
-import SearchScreen from '../screens/SearchScreen';
 import CourseScreen from '../screens/CourseScreen';
+import VideoScreen from '../screens/VideoScreen';
+import LoginScreen from '../screens/Login';
+import UserScreen from '../screens/UserSceen';
+import CartScreen from '../screens/CartScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,10 +16,11 @@ export default function AppNavigation() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" options={{headerShown: false}} component={HomeScreen} />
-        <Stack.Screen name="Movie" options={{headerShown: false}} component={MovieScreen} />
         <Stack.Screen name="Course" options={{headerShown: false}} component={CourseScreen} />
-        <Stack.Screen name="Person" options={{headerShown: false}} component={PersonScreen} />
-        <Stack.Screen name="Search" options={{headerShown: false}} component={SearchScreen} />
+        <Stack.Screen name="Video" options={{headerShown: false}} component={VideoScreen} />
+        <Stack.Screen name="Login" options={{headerShown: false}} component={LoginScreen} />
+        <Stack.Screen name="User" options={{headerShown: false}} component={UserScreen} />
+        <Stack.Screen name="Cart" options={{headerShown: false}} component={CartScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

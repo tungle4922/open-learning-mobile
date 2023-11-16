@@ -15,7 +15,7 @@ import {
     image185,
     image342,
     poster342,
-  } from "../api/moviedb";
+  } from "../api/apis";
   import { styles } from "../theme";
   const { width, height } = Dimensions.get("window");
   

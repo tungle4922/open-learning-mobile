@@ -11,10 +11,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Bars3CenterLeftIcon,
   MagnifyingGlassIcon,
+  ShoppingCartIcon,
+  UserIcon,
 } from "react-native-heroicons/outline";
 import { StatusBar } from "expo-status-bar";
-import { fetchAllCourses, fetchTopRatedMovies } from "../api/moviedb";
-import { useNavigation } from "@react-navigation/native";
+import { _clearStore, _retrieveData, fetchAllCourses } from "../api/apis";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Loading from "../components/loading";
 import { styles } from "../theme";
 import MainCourse from "../components/mainCourse";
@@ -26,11 +28,20 @@ const ios = Platform.OS === "ios";
 export default function HomeScreen() {
   const [allCourse, setAllCourse] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(undefined);
   const navigation = useNavigation();
 
   useEffect(() => {
     getALLCourse();
+    getUserInfo();
   }, []);
+
+  const getUserInfo = async () => {
+    const res = await _retrieveData("user");
+    if (res) {
+      setUserInfo(JSON.parse(res));
+    }
+  };
 
   const getALLCourse = async () => {
     const data = await fetchAllCourses();
@@ -39,13 +50,26 @@ export default function HomeScreen() {
     setLoading(false);
   };
 
+  const navigateUser = async () => {
+    const res = await _retrieveData("user");
+    console.log("res from navigateUser", res);
+    if (res === undefined) {
+      navigation.navigate("Login");
+    } else {
+      navigation.navigate("User");
+    }
+  };
+
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar */}
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
-          <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
+          <TouchableOpacity onPress={() => navigateUser()}>
+            <UserIcon size="26" strokeWidth={2} color="white" />
+          </TouchableOpacity>
+
           <View className="flex-row items-center">
             <Image
               className="rounded-3xl w-[25px] h-[25px] mr-2"
@@ -57,8 +81,8 @@ export default function HomeScreen() {
               <Text className="text-[#4177be]">Open</Text>Learning
             </Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-            <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
+          <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+            <ShoppingCartIcon size="28" strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -70,14 +94,19 @@ export default function HomeScreen() {
           contentContainerStyle={{ paddingBottom: 10 }}
         >
           {/* All course Carousel */}
-          {allCourse.length > 0 && <MainCourse data={allCourse.filter((item) => item.price > 0)} />}
+          {allCourse.length > 0 && (
+            <MainCourse data={allCourse.filter((item) => item.price > 0)} />
+          )}
 
           {/* All upcoming course */}
           <UpcomingCourse />
 
           {/* top rated movies row */}
           {allCourse.length > 0 && (
-            <CourseList title="Khóa học miễn phí" data={allCourse.filter((item) => item.price === 0)} />
+            <CourseList
+              title="Khóa học miễn phí"
+              data={allCourse.filter((item) => item.price === 0)}
+            />
           )}
         </ScrollView>
       )}
