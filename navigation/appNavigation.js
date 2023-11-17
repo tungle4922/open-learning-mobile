@@ -7,9 +7,10 @@ import VideoScreen from '../screens/VideoScreen';
 import LoginScreen from '../screens/Login';
 import UserScreen from '../screens/UserSceen';
 import CartScreen from '../screens/CartScreen';
+import AboutUsScreen from '../screens/AboutUsScreen';
+import ContactScreen from '../screens/ContactScreen';
 
 const Stack = createNativeStackNavigator();
-
 
 export default function AppNavigation() {
   return (
@@ -21,6 +22,8 @@ export default function AppNavigation() {
         <Stack.Screen name="Login" options={{headerShown: false}} component={LoginScreen} />
         <Stack.Screen name="User" options={{headerShown: false}} component={UserScreen} />
         <Stack.Screen name="Cart" options={{headerShown: false}} component={CartScreen} />
+        <Stack.Screen name="AboutUs" options={{headerShown: false}} component={AboutUsScreen} />
+        <Stack.Screen name="Contact" options={{headerShown: false}} component={ContactScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

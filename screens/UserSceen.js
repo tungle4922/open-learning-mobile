@@ -26,9 +26,6 @@ import {
   fetchCourseDetails,
 } from "../api/apis";
 import { styles, theme } from "../theme";
-import Loading from "../components/loading";
-import YoutubePlayer, { getYoutubeMeta } from "react-native-youtube-iframe";
-import VideoList from "../components/videoList";
 
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : " mt-3";
@@ -64,7 +61,6 @@ export default function UserScreen() {
       contentContainerStyle={{ paddingBottom: 20 }}
       className="flex-1 bg-neutral-900"
     >
-      {/* back button and movie poster */}
       <View className="w-full">
         <SafeAreaView
           className={
@@ -110,16 +106,20 @@ export default function UserScreen() {
                 strokeWidth={1.5}
                 color="white"
               />
-              <Text className="text-white text-base mt-1 ml-2">
-                Về chúng tôi
-              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("AboutUs")}>
+                <Text className="text-white text-base mt-1 ml-2">
+                  Về chúng tôi
+                </Text>
+              </TouchableOpacity>
             </View>
             <View className="h-[1px] bg-white my-4"></View>
             <View className="flex-row items-center">
               <PaperAirplaneIcon size="24" strokeWidth={1.5} color="white" />
-              <Text className="text-white text-base mt-1 ml-2">
-                Gửi thông tin phản hồi
-              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Contact")}>
+                <Text className="text-white text-base mt-1 ml-2">
+                  Gửi thông tin phản hồi
+                </Text>
+              </TouchableOpacity>
             </View>
             <View className="h-[1px] bg-white my-4"></View>
           </View>

@@ -23,9 +23,6 @@ import {
   fetchCourseDetails,
 } from "../api/apis";
 import { styles, theme } from "../theme";
-import Loading from "../components/loading";
-import YoutubePlayer, { getYoutubeMeta } from "react-native-youtube-iframe";
-import VideoList from "../components/videoList";
 import axios from "axios";
 
 const ios = Platform.OS == "ios";
