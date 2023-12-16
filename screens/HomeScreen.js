@@ -101,7 +101,7 @@ export default function HomeScreen() {
           {/* All upcoming course */}
           <UpcomingCourse />
 
-          {/* top rated movies row */}
+          {/* free course */}
           {allCourse.length > 0 && (
             <CourseList
               title="Khóa học miễn phí"

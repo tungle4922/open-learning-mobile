@@ -11,7 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { styles } from "../theme";
 const { width, height } = Dimensions.get("window");
 
-export default function UpcomingCourse({hideSeeAll }) {
+export default function UpcomingCourse({ hideSeeAll }) {
   const navigation = useNavigation();
   const [data, setData] = useState([
     {
@@ -31,9 +31,9 @@ export default function UpcomingCourse({hideSeeAll }) {
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-lg">Khóa học Pro</Text>
         {!hideSeeAll && (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Category")}>
             <Text style={styles.text} className="text-lg">
-              See All
+              Xem tất cả
             </Text>
           </TouchableOpacity>
         )}

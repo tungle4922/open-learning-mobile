@@ -69,7 +69,7 @@ export default function CourseScreen() {
       setThumbnailUrl(listImg);
 
       const userJSON = await _retrieveData("user");
-      const user = JSON.parse(userJSON);
+      const user = userJSON !== undefined && JSON.parse(userJSON);
       const res = data?.purchasedUser?.find((item) => item === user?._id);
       if (res) {
         setIsBought(true);
@@ -118,6 +118,16 @@ export default function CourseScreen() {
         ]);
       }
     }
+  };
+
+  const alertLogin = () => {
+    Alert.alert("Warning", "Vui lòng đăng nhập", [
+      {
+        text: "Cancel",
+        cancelable: true,
+        style: "cancel",
+      },
+    ]);
   };
 
   return (
@@ -189,9 +199,15 @@ export default function CourseScreen() {
             <Text className="text-neutral-400 font-semibold text-base text-center">
               {course?.type2} • {course?.type} • {course?.duration}
             </Text>
-            <Text className="text-[#eab308] font-semibold text-lg text-center">
-              ₫{course?.price.toLocaleString()}
-            </Text>
+            {course?.price > 0 ? (
+              <Text className="text-[#eab308] font-semibold text-lg text-center">
+                ₫{course?.price.toLocaleString()}
+              </Text>
+            ) : (
+              <Text className="text-[#eab308] font-semibold text-lg text-center">
+                Miễn phí
+              </Text>
+            )}
           </>
         ) : null}
 
@@ -237,6 +253,21 @@ export default function CourseScreen() {
             onPress={() => addToCart()}
             title="Thêm vào giỏ hàng"
           ></Button>
+        </View>
+      )}
+
+      {!userInfo?.accessToken && course?.price > 0 && (
+        <View className="px-3 mt-4 flex justify-center">
+          <Button
+            onPress={() => alertLogin()}
+            title="Thêm vào giỏ hàng"
+          ></Button>
+        </View>
+      )}
+
+      {!userInfo?.accessToken && course?.price === 0 && (
+        <View className="px-3 mt-4 flex justify-center">
+          <Button onPress={() => alertLogin()} title="Xem khóa học"></Button>
         </View>
       )}
     </ScrollView>

@@ -9,6 +9,7 @@ import UserScreen from '../screens/UserSceen';
 import CartScreen from '../screens/CartScreen';
 import AboutUsScreen from '../screens/AboutUsScreen';
 import ContactScreen from '../screens/ContactScreen';
+import CategoryScreen from '../screens/categoryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ export default function AppNavigation() {
         <Stack.Screen name="Cart" options={{headerShown: false}} component={CartScreen} />
         <Stack.Screen name="AboutUs" options={{headerShown: false}} component={AboutUsScreen} />
         <Stack.Screen name="Contact" options={{headerShown: false}} component={ContactScreen} />
+        <Stack.Screen name="Category" options={{headerShown: false}} component={CategoryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
