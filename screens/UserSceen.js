@@ -93,12 +93,12 @@ export default function UserScreen() {
             UserId: {userInfo?._id}
           </Text>
           <View className="px-14 mt-12 w-full">
-            <View className="flex-row items-center">
+            <TouchableOpacity onPress={() => navigation.navigate("MyCourse")} className="flex-row items-center">
               <BriefcaseIcon size="24" strokeWidth={1.5} color="white" />
               <Text className="text-white text-base mt-1 ml-2">
                 Khóa học đã mua
               </Text>
-            </View>
+            </TouchableOpacity>
             <View className="h-[1px] bg-white my-4"></View>
             <View className="flex-row items-center">
               <InformationCircleIcon

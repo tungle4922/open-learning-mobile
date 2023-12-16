@@ -80,6 +80,18 @@ export const registerUser = async (body) => {
   }
 };
 
+//get User info
+export const getInfoUser = async (id) => {
+  try {
+    const res = await axios.get(
+      `https://coursewebbackend.vercel.app/v1/auth/userInfo/${id}`
+    );
+    return res.data;
+  } catch (err) {
+    return 0;
+  }
+};
+
 export const _storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);

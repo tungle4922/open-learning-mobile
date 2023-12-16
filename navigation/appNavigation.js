@@ -13,6 +13,7 @@ import CategoryScreen from '../screens/categoryScreen';
 import SignUpScreen from '../screens/SignUp';
 import AllVideoSceen from '../screens/AllVideoScreen';
 import SearchCourseScreen from '../screens/SearchCourse';
+import MyCourseScreen from '../screens/MyCourseScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,7 @@ export default function AppNavigation() {
         <Stack.Screen name="SignUp" options={{headerShown: false}} component={SignUpScreen} />
         <Stack.Screen name="AllVideo" options={{headerShown: false}} component={AllVideoSceen} />
         <Stack.Screen name="SearchCourse" options={{headerShown: false}} component={SearchCourseScreen} />
+        <Stack.Screen name="MyCourse" options={{headerShown: false}} component={MyCourseScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
