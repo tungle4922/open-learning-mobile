@@ -72,16 +72,18 @@ export default function LoginScreen() {
           style={styles.input}
           onChangeText={(text) => setUsername(text)}
         />
-        <Text className="text-white text-[16px] ml-4">Password</Text>
+        <Text className="text-white text-[16px] ml-4">Mật khẩu</Text>
         <TextInput
+          secureTextEntry={true}
           style={styles.input}
-          placeholder="Nhập password"
+          placeholder="Nhập mật khẩu"
           onChangeText={(text) => setPassword(text)}
         />
         <View className="px-3 mt-6">
           <Button onPress={() => handleLogin()} title="Đăng nhập"></Button>
         </View>
       </SafeAreaView>
+      <Text className="text-white text-[15px] ml-4 text-center mt-5">Bạn chưa có tài khoản? <Text onPress={() => navigation.navigate("SignUp")} className="text-[#eab308]">Đăng ký</Text> </Text>
     </View>
   );
 }

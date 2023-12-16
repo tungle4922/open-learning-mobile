@@ -67,6 +67,19 @@ export const login = async (username, password) => {
   }
 };
 
+//register
+export const registerUser = async (body) => {
+  try {
+    const res = await axios.post(
+      "https://coursewebbackend.vercel.app/v1/auth/register",
+      body
+    );
+    return res.data;
+  } catch (err) {
+    return 0;
+  }
+};
+
 export const _storeData = async (key, value) => {
   try {
     await AsyncStorage.setItem(key, value);
