@@ -11,6 +11,8 @@ import AboutUsScreen from '../screens/AboutUsScreen';
 import ContactScreen from '../screens/ContactScreen';
 import CategoryScreen from '../screens/categoryScreen';
 import SignUpScreen from '../screens/SignUp';
+import AllVideoSceen from '../screens/AllVideoScreen';
+import SearchCourseScreen from '../screens/SearchCourse';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,9 +27,12 @@ export default function AppNavigation() {
         <Stack.Screen name="User" options={{headerShown: false}} component={UserScreen} />
         <Stack.Screen name="Cart" options={{headerShown: false}} component={CartScreen} />
         <Stack.Screen name="AboutUs" options={{headerShown: false}} component={AboutUsScreen} />
+
         <Stack.Screen name="Contact" options={{headerShown: false}} component={ContactScreen} />
         <Stack.Screen name="Category" options={{headerShown: false}} component={CategoryScreen} />
         <Stack.Screen name="SignUp" options={{headerShown: false}} component={SignUpScreen} />
+        <Stack.Screen name="AllVideo" options={{headerShown: false}} component={AllVideoSceen} />
+        <Stack.Screen name="SearchCourse" options={{headerShown: false}} component={SearchCourseScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

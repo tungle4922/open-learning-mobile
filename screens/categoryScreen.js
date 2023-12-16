@@ -19,6 +19,8 @@ import {
   ChevronLeftIcon,
   FunnelIcon,
   InformationCircleIcon,
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
   PaperAirplaneIcon,
 } from "react-native-heroicons/outline";
 import { HeartIcon } from "react-native-heroicons/solid";
@@ -186,17 +188,28 @@ export default function CategoryScreen() {
       <View className="w-full">
         <SafeAreaView
           className={
-            "absolute z-20 w-full flex-row items-center px-4 " + topMargin
+            "absolute z-20 w-full flex-row items-center px-4 justify-between" +
+            topMargin
           }
         >
-          <TouchableOpacity
-            style={styles.background}
-            className="rounded-xl p-1"
-            onPress={() => navigation.navigate("Home")}
-          >
-            <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" />
-          </TouchableOpacity>
-          <Text className="text-neutral-300 text-lg ml-3">Tất cả khóa học</Text>
+          <View className="flex-row items-center">
+            <TouchableOpacity
+              style={styles.background}
+              className="rounded-xl p-1"
+              onPress={() => navigation.navigate("Home")}
+            >
+              <ChevronLeftIcon size="28" strokeWidth={2} color="white" />
+            </TouchableOpacity>
+            <Text className="text-neutral-300 text-lg ml-3">
+              Tất cả khóa học
+            </Text>
+          </View>
+          <MagnifyingGlassCircleIcon
+            size="27"
+            strokeWidth={2.5}
+            color="#fff"
+            onPress={() => navigation.navigate("SearchCourse")}
+          ></MagnifyingGlassCircleIcon>
         </SafeAreaView>
       </View>
       <View className="mt-[100px] ml-4">
@@ -247,7 +260,11 @@ export default function CategoryScreen() {
           onPress={() => toggle2()}
           className="flex-row items-center mt-1"
         >
-          <AdjustmentsHorizontalIcon size="23" strokeWidth={2.5} color="#eab308"></AdjustmentsHorizontalIcon>
+          <AdjustmentsHorizontalIcon
+            size="23"
+            strokeWidth={2.5}
+            color="#eab308"
+          ></AdjustmentsHorizontalIcon>
           <Text className="text-[#eab308] text-[16px] mb-1 mt-1 ml-1">
             Sắp xếp theo: <Text className="text-neutral-300">{title2}</Text>
           </Text>

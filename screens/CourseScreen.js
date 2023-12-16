@@ -149,7 +149,7 @@ export default function CourseScreen() {
           <TouchableOpacity
             style={styles.background}
             className="rounded-xl p-1"
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("Home")}
           >
             <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" />
           </TouchableOpacity>
@@ -241,9 +241,10 @@ export default function CourseScreen() {
       {userInfo?.accessToken && (isBought === true || course?.price === 0) && (
         <VideoList
           title={"Danh sách bài học"}
-          hideSeeAll={true}
+          itemCourse={item}
           data={course?.youtube}
           thumbnailUrl={thumbnailUrl}
+          typeList={"row"}
         />
       )}
 
