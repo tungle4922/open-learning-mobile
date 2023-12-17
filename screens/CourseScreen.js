@@ -271,6 +271,15 @@ export default function CourseScreen() {
           <Button onPress={() => alertLogin()} title="Xem khóa học"></Button>
         </View>
       )}
+
+      {userInfo?.accessToken && (
+        <View className="px-3 mt-4 flex justify-center">
+          <Button
+            onPress={() => navigation.push("Certificate", course?.name)}
+            title="Nhận chứng chỉ"
+          ></Button>
+        </View>
+      )}
     </ScrollView>
   );
 }
